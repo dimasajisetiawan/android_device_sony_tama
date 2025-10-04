@@ -63,3 +63,6 @@ PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*.ko,$(COMMON_PATH)/prebuilt
 # Prebuit files for recovery ramdisk
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,$(COMMON_PATH)/recovery/root,$(TARGET_COPY_OUT_RECOVERY)/root)
+
+# Include twrp.flags to override recovery.fstab
+PRODUCT_COPY_FILES += $(COMMON_PATH)/twrp.flags:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/twrp.flags
