@@ -33,118 +33,82 @@ TARGET_CPU_VARIANT := generic
 TARGET_CPU_VARIANT_RUNTIME := kryo385
 
 TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := $(TARGET_ARCH_VARIANT)
+TARGET_2ND_ARCH_VARIANT := armv8-a
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
-TARGET_2ND_CPU_VARIANT := $(TARGET_CPU_VARIANT)
-TARGET_2ND_CPU_VARIANT_RUNTIME := $(TARGET_CPU_VARIANT_RUNTIME)
-
-ENABLE_CPUSETS := true
-ENABLE_SCHEDBOOST := true
+TARGET_2ND_CPU_VARIANT := generic
+TARGET_2ND_CPU_VARIANT_RUNTIME := kryo385
 
 # Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := $(PRODUCT_PLATFORM)
-TARGET_NO_BOOTLOADER := true
+TARGET_BOOTLOADER_BOARD_NAME := sdm845
+TARGET_NO_RECOVERY := true
+BOARD_USES_RECOVERY_AS_BOOT := true
 TARGET_USES_UEFI := true
 
 # Kernel
 BOARD_KERNEL_CMDLINE := \
     androidboot.console=ttyMSM0 \
     androidboot.hardware=qcom \
-    androidboot.memcg=1 \
     androidboot.usbcontroller=a600000.dwc3 \
-    cgroup.memory=nokmem,nosocket \
-    console=ttyMSM0,115200n8 \
-    earlycon=msm_geni_serial,0xa90000 \
     lpm_levels.sleep_disabled=1 \
     msm_rtb.filter=0x237 \
-    reboot=panic_warm \
     service_locator.enable=1 \
     swiotlb=2048 \
+    ehci-hcd.park=3 \
+    androidboot.configfs=true \
+    loop.max_part=7 \
+    panic_on_err=1 \
+    msm_drm.dsi_display0=dsi_panel_cmd_display:config0 \
+    zram.backend=z3fold \
     video=vfb:640x400,bpp=32,memsize=3072000
-BOARD_KERNEL_IMAGE_NAME := Image.gz
+
+BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 BOARD_KERNEL_PAGESIZE := 4096
-BOARD_BOOT_HEADER_VERSION := 2
+BOARD_BOOT_HEADER_VERSION := 1
 BOARD_KERNEL_BASE          := 0x00000000
 BOARD_KERNEL_TAGS_OFFSET   := 0x00000100
 BOARD_KERNEL_OFFSET        := 0x00008000
 BOARD_KERNEL_SECOND_OFFSET := 0x00f00000
 BOARD_RAMDISK_OFFSET       := 0x01000000
-BOARD_DTB_OFFSET           := 0x01f00000
 TARGET_KERNEL_ARCH := $(TARGET_ARCH)
 TARGET_NO_KERNEL := false
 BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
-TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/$(BOARD_KERNEL_IMAGE_NAME)
 BOARD_INCLUDE_RECOVERY_DTBO := true
-BOARD_MKBOOTIMG_ARGS += --base $(BOARD_KERNEL_BASE)
-BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
 BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --second_offset $(BOARD_KERNEL_SECOND_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
-BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
 
 # Platform
 TARGET_BOARD_PLATFORM := $(TARGET_BOOTLOADER_BOARD_NAME)
-TARGET_BOARD_PLATFORM_GPU := qcom-adreno650
-TARGET_USES_HARDWARE_QCOM_BOOTCTRL := true
-QCOM_BOARD_PLATFORMS += $(TARGET_BOARD_PLATFORM)
+TARGET_BOARD_PLATFORM_GPU := qcom-adreno630
 
 # Partition Info
-BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
-BOARD_USES_PRODUCTIMAGE := true
-
-BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600
-BOARD_SYSTEMIMAGE_JOURNAL_SIZE := 0
-BOARD_SYSTEMIMAGE_EXTFS_INODE_COUNT := 4096
+BOARD_FLASH_BLOCK_SIZE := 131072
+BOARD_BOOTIMAGE_PARTITION_SIZE := 0x04000000
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 4227858432
+# Reserve space for data encryption (44712771584-16384)
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 44712755200
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_VENDORIMAGE_PARTITION_SIZE := 1056714752
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
-BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
-
-# Dynamic/Logical Partitions
-BOARD_SUPER_PARTITION_SIZE := 15032385536
-BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 6441926656
-BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := \
-    system \
-    system_ext \
-    vendor \
-    product \
-    odm
+BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 
 # Workaround for error copying vendor files to recovery ramdisk
-BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-TARGET_COPY_OUT_PRODUCT := product
 TARGET_COPY_OUT_VENDOR := vendor
 
 # Recovery
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
-BOARD_HAS_LARGE_FILESYSTEM := true
-BOARD_HAS_NO_SELECT_BUTTON := true
-BOARD_ROOT_EXTRA_FOLDERS := batinfo
-BOARD_SUPPRESS_SECURE_ERASE := true
-TARGET_NO_RECOVERY := false
-TARGET_RECOVERY_DEVICE_MODULES += \
-    libion \
-    vendor.display.config@1.0 \
-    vendor.display.config@2.0
+TARGET_RECOVERY_DEVICE_MODULES += android.hardware.boot@1.0
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/recovery.fstab
 
 # Use mke2fs to create ext4 images
 TARGET_USES_MKE2FS := true
-
-# AVB
-BOARD_AVB_VBMETA_SYSTEM := system
-BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
-BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
-BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
-BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 1
 
 # Encryption
 BOARD_USES_METADATA_PARTITION := true
@@ -157,32 +121,25 @@ VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
 
 # Extras
 BOARD_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy
-TARGET_VENDOR_PROP += $(COMMON_PATH)/vendor.prop
 
 # TWRP specific build flags
 TARGET_RECOVERY_QCOM_RTC_FIX := true
 TARGET_RECOVERY_PIXEL_FORMAT := BGRA_8888
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
+RECOVERY_SDCARD_ON_DATA := true
+TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
+TW_INPUT_BLACKLIST := "hbtp_vm"
+TW_NO_SCREEN_BLANK := true
+TW_MAX_BRIGHTNESS := 1023
+#TW_DEFAULT_BRIGHTNESS := 420
 TW_THEME := portrait_hdpi
-TW_STATUS_ICONS_ALIGN := center
-TW_QCOM_ATS_OFFSET := 1621617233500
-TW_DEFAULT_BRIGHTNESS := 420
-TW_EXCLUDE_APEX := true
 TW_EXCLUDE_DEFAULT_USB_INIT := true
 TW_EXTRA_LANGUAGES := true
 TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_NTFS_3G := true
 TW_INCLUDE_PYTHON := true
 TW_INCLUDE_RESETPROP := true
-TW_NO_EXFAT_FUSE := true
-TW_OVERRIDE_SYSTEM_PROPS := \
-    "ro.build.product;ro.build.fingerprint=ro.system.build.fingerprint;ro.build.version.incremental;ro.product.device=ro.product.system.device;ro.product.model=ro.product.system.model;ro.product.name=ro.product.system.name"
-RECOVERY_LIBRARY_SOURCE_FILES += \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libion.so \
-    $(TARGET_OUT_SYSTEM_EXT_SHARED_LIBRARIES)/vendor.display.config@1.0.so \
-    $(TARGET_OUT_SYSTEM_EXT_SHARED_LIBRARIES)/vendor.display.config@2.0.so
-TW_LOAD_VENDOR_MODULES := $(shell echo \"$(shell ls $(DEVICE_PATH)/prebuilt/modules)\")
-TW_LOAD_VENDOR_MODULES_EXCLUDE_GKI := true
+TW_HAS_EDL_MODE := true
 
 # TWRP Debug Flags
 #TWRP_EVENT_LOGGING := true
@@ -193,21 +150,18 @@ RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/debuggerd
 TARGET_RECOVERY_DEVICE_MODULES += strace
 RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/strace
 
-#
-# For local builds only
-#
-# TWRP zip installer
-ifneq ($(wildcard bootable/recovery/installer/.),)
-    USE_RECOVERY_INSTALLER := true
-    RECOVERY_INSTALLER_PATH := bootable/recovery/installer
-endif
 
 # Custom TWRP Versioning
+#USE_CUSTOM_VERSION := true
+
+# device version is optional - the default value is "0" if nothing is set in device tree
+#CUSTOM_TWRP_DEVICE_VERSION := 0
+
 # See https://github.com/minimal-manifest-twrp/android_device_common_version-info for details
 ifneq ($(USE_CUSTOM_VERSION),)
     ifneq ($(wildcard device/common/version-info/.),)
         # version prefix is optional - the default value is "LOCAL" if nothing is set in device tree
-        CUSTOM_TWRP_VERSION_PREFIX := CPTB
+        # CUSTOM_TWRP_VERSION_PREFIX := UNOFFICIAL
 
         # Repo must be synced for automatic custom versioning to work
         include device/common/version-info/custom_twrp_version.mk
