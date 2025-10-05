@@ -1,4 +1,4 @@
-#!/sbin/sh
+#!/system/bin/sh
 #
 # Copyright (c) 2019-2020 Martin Dünkelmann
 # All rights reserved.
@@ -11,7 +11,7 @@
 touch_id=`cat /sys/devices/dsi_panel_driver/panel_id`
 
 #XZ2 "3" XZ2C "4" Clearpad
-if [[ "$touch_id" == "3" ]] || [[ "$touch_id" == "4" ]]; then
+if [ "$touch_id" = "3" ] || [ "$touch_id" = "4" ]; then
     insmod /sbin/clearpad_rmi_dev.ko
     insmod /sbin/clearpad_core.ko
     insmod /sbin/clearpad_i2c.ko
@@ -20,7 +20,7 @@ if [[ "$touch_id" == "3" ]] || [[ "$touch_id" == "4" ]]; then
 fi
 
 #XZ2 "7" XZ2C "8" TCM
-if [[ "$touch_id" == "7" ]] || [[ "$touch_id" == "8" ]]; then
+if [ "$touch_id" = "7" ] || [ "$touch_id" = "8" ]; then
     insmod /sbin/synaptics_tcm_i2c.ko
     insmod /sbin/synaptics_tcm_core.ko
     insmod /sbin/synaptics_tcm_touch.ko
@@ -32,7 +32,7 @@ if [[ "$touch_id" == "7" ]] || [[ "$touch_id" == "8" ]]; then
 fi
 
 #XZ2P SSW
-if [[ "$touch_id" == "9" ]]; then
+if [ "$touch_id" = "9" ]; then
     insmod /sbin/ssw49501.ko
     insmod /sbin/ssw_mon.ko
 
@@ -40,7 +40,7 @@ if [[ "$touch_id" == "9" ]]; then
 fi
 
 #XZ3 ATMEL
-if [[ "$touch_id" == "5" ]]; then
+if [ "$touch_id" = "5" ]; then
     insmod /sbin/atmel_mxt640u.ko
 
     echo 1 > /sys/devices/virtual/input/lge_touch/charge_out
