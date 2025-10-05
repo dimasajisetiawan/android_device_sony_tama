@@ -37,20 +37,40 @@
 # Currently we dont have e2fsck compiled. So fs check would failed.
 
 #<src>                                                 <mnt_point>               <type>  <mnt_flags and options>                            <fs_mgr_flags>
-/dev/block/by-name/system                               /system                   ext4    ro,barrier=1,discard                                 wait,slotselect,avb,first_stage_mount
-/dev/block/by-name/vendor                               /vendor                   ext4    ro,barrier=1,discard                                 wait,slotselect,avb,first_stage_mount
+/dev/block/bootdevice/by-name/boot                      /boot                     emmc    defaults                                             slotselect
+/dev/block/bootdevice/by-name/dtbo                      /dtbo                     emmc    defaults                                             slotselect,display=DTBO,backup=1,flashimg=1
+/dev/block/bootdevice/by-name/vbmeta                    /vbmeta                   emmc    defaults                                             slotselect,display=VBMeta,backup=1,flashimg=1
+
+/dev/block/by-name/system                               /system                   ext4    ro,barrier=1,discard                                 wait,slotselect,avb,first_stage_mount,display=System,backup=1,wipeingui
+/dev/block/by-name/vendor                               /vendor                   ext4    ro,barrier=1,discard                                 wait,slotselect,avb,first_stage_mount,display=Vendor,backup=1,wipeingui
+/dev/block/bootdevice/by-name/oem                       /oem                      ext4    ro,barrier=1,discard                                 wait,slotselect,display=OEM,backup=1
+
 /dev/block/bootdevice/by-name/userdata                  /data                     ext4    noatime,nosuid,nodev,barrier=1,noauto_da_alloc,discard wait,check,fileencryption=ice,quota,reservedsize=128M
 /dev/block/bootdevice/by-name/userdata                  /data                     f2fs    noatime,nosuid,nodev,discard                         wait,check,fileencryption=ice,quota,reservedsize=128M
-#/devices/platform/soc/8804000.sdhci/mmc_host*           auto                      auto    defaults                                             wait,voldmanaged=sdcard1:auto,encryptable=userdata
-#/devices/platform/soc/1da4000.ufshc_card/host*          auto                      auto    defaults                                             wait,voldmanaged=sdcard1:auto,encryptable=userdata
-#/dev/block/bootdevice/by-name/modem                     /vendor/firmware_mnt      vfat    ro,shortname=lower,uid=0,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0 wait,slotselect
-#/dev/block/bootdevice/by-name/dsp                       /vendor/dsp               ext4    ro,nosuid,nodev,barrier=1                            wait,slotselect
-#/dev/block/bootdevice/by-name/persist                   /mnt/vendor/persist       ext4    noatime,nosuid,nodev,barrier=1,discard               wait,check,notrim
-#/dev/block/bootdevice/by-name/bluetooth                 /vendor/bt_firmware       vfat    ro,shortname=lower,uid=1002,gid=3002,dmask=227,fmask=337,context=u:object_r:bt_firmware_file:s0 wait,slotselect
-#/devices/platform/soc/a600000.ssusb/a600000.dwc3/xhci-hcd.0.auto*     /storage/usbotg    vfat    nosuid,nodev         wait,voldmanaged=usbotg:auto
+
+#/devices/platform/soc/8804000.sdhci/mmc_host/*          /sd-ext                   auto    defaults                                             wait,voldmanaged=sd-ext:1,encryptable=userdata
+#/devices/platform/soc/1da4000.ufshc_card/host/*         /sd-ext                   auto    defaults                                             wait,voldmanaged=sd-ext:1,encryptable=userdata
+/dev/block/mmcblk0p1                                    /sdcard1                  auto    defaults                                             wait,voldmanaged=sdcard1:auto,encryptable=userdata,storage,wipeingui,removable,display="Micro SD card"
+#/dev/block/mmcblk0p2                                    /sd-ext                   auto    defaults                                             wait,voldmanaged=sdcard1:auto,encryptable=userdata,storage,wipeingui,removable
+
+#/devices/platform/soc/a600000.ssusb/a600000.dwc3/xhci-hcd.0.auto* /usbotg         auto    nosuid,nodev                                         wait,voldmanaged=usbotg:auto,storage,wipeingui,removable,display="USB OTG"
+#/dev/block/sdd1                                         /usbotg                   auto    nosuid,nodev                                         wait,voldmanaged=usbotg:auto,storage,wipeingui,removable,display="USB OTG"
+
+/dev/block/bootdevice/by-name/modem                     /firmware                 vfat    ro,shortname=lower,uid=0,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0 wait,slotselect,display=Firmware
+/dev/block/bootdevice/by-name/dsp                       /dsp                      ext4    ro,nosuid,nodev,barrier=1                            wait,slotselect,display=DSP
+/dev/block/bootdevice/by-name/bluetooth                 /bt_firmware              vfat    ro,shortname=lower,uid=1002,gid=3002,dmask=227,fmask=337,context=u:object_r:bt_firmware_file:s0 wait,slotselect,display="BT Firmware"
+
 # Need to have this entry in here even though the mount point itself is no longer needed.
 # The update_engine code looks for this entry in order to determine the boot device address
 # and fails if it does not find it.
-/dev/block/bootdevice/by-name/frp                       /persistent        emmc    defaults                                             defaults
-/dev/block/bootdevice/by-name/misc                      /misc              emmc    defaults                                             defaults
-/dev/block/zram0                                        none               swap    defaults                                             zramsize=25%
+/dev/block/bootdevice/by-name/frp                       /persistent               emmc    defaults                                             defaults
+/dev/block/bootdevice/by-name/misc                      /misc                     emmc    defaults                                             defaults
+/dev/block/zram0                                        none                      swap    defaults                                             zramsize=25%
+
+/dev/block/bootdevice/by-name/modemst1                  /efs1                     emmc    defaults                                             display=EFS,backup=1
+/dev/block/bootdevice/by-name/modemst2                  /efs2                     emmc    defaults                                             display=EFS,backup=1,subpartitionof=/efs1
+
+/dev/block/bootdevice/by-name/system                    /system_image             emmc    defaults                                             slotselect,backup=1
+/dev/block/bootdevice/by-name/vendor                    /vendor_image             emmc    defaults                                             slotselect,backup=1
+/dev/block/bootdevice/by-name/persist                   /persist_image            emmc    defaults                                             display="Persist Image",backup=1
+/dev/block/bootdevice/by-name/persist                   /persist                  ext4    ro,noatime,nosuid,nodev,barrier=1                    wait,check,notrim,display=Persist,backup=1
