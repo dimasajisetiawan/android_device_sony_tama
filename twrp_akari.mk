@@ -50,5 +50,8 @@ COMMON_PATH := device/$(PRODUCT_BRAND)/tama
 # Device path for OEM device tree
 DEVICE_PATH := device/$(PRODUCT_BRAND)/tama/$(PRODUCT_DEVICE)
 
+# clone qcom recovery rc to device named recovery rc script for compatibility with sodp kernels
+PRODUCT_COPY_FILES += $(COMMON_PATH)/recovery/root/init.recovery.qcom.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.$(PRODUCT_DEVICE).rc
+
 # Inherit from hardware-specific part of the product configuration
 $(call inherit-product, $(COMMON_PATH)/device.mk)
