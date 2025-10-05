@@ -25,9 +25,23 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+import /init.recovery.qcom_decrypt.rc
+
+on early-init
+    mkdir /firmware 0771 system system
+
+on init
+    setprop prepdecrypt.loglevel 2
+#    setprop prepdecrypt.setpatch false
+#    setprop prepdecrypt.setpatch true
+
 on init
     write /sys/class/backlight/panel0-backlight/brightness 200
 
 on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
+
+on late-init
+    start boot-hal-1-0
+    start health-hal-2-0
