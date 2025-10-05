@@ -45,3 +45,21 @@ on fs
 on late-init
     start boot-hal-1-0
     start health-hal-2-0
+    start set_permissive
+
+on post-fs-data
+    start preptouch
+
+service set_permissive /system/bin/permissive.sh
+    disabled
+    user root
+    group root
+    oneshot
+    seclabel u:r:recovery:s0
+
+service preptouch /system/bin/preptouch.sh
+    disabled
+    user root
+    group root
+    oneshot
+    seclabel u:r:recovery:s0
