@@ -1,0 +1,19 @@
+Subject: [PATCH] system/vold: disable support for FS_IOC_ADD_ENCRYPTION_KEY
+
+this workaround is needed to make decryption with SODP kernel 4.14 working in twrp
+
+project system/vold/
+diff --git a/system/vold/KeyUtil.cpp b/system/vold/KeyUtil.cpp
+index 9273564..28628aa 100644
+--- a/system/vold/KeyUtil.cpp
++++ b/system/vold/KeyUtil.cpp
+@@ -87,7 +87,8 @@ static bool isFsKeyringSupportedImpl() {
+     if (errno != EFAULT) {
+         PLOG(WARNING) << "Unexpected error from FS_IOC_ADD_ENCRYPTION_KEY";
+     }
+-    LOG(INFO) << "Detected support for FS_IOC_ADD_ENCRYPTION_KEY";
++    LOG(INFO) << "Detected support for FS_IOC_ADD_ENCRYPTION_KEY, but returning false!";
++    return false;
+     android::base::SetProperty("ro.crypto.uses_fs_ioc_add_encryption_key", "true");
+     return true;
+ }
