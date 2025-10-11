@@ -1,0 +1,55 @@
+Subject: [PATCH] arm64/dts: sdm845-tama-common: LOS dtbo compatibility fixes
+
+this is needed in order to allow 'fastboot boot' of the kernel
+in case dtbo is either from stock firmware or updated from recent
+Lineage OS rom, so we can have single twrp build for both
+
+related commits in tama lineage os kernel repository
+https://github.com/LineageOS/android_kernel_sony_sdm845
+
+ad77120d734a185c3e9e84ca10dbc0d37697b779
+arm64: DT: sdm845: Add phandle to reserved-memory node
+
+9566e6f1b162487ec333e52890b41a8edf0adc59
+arm64: DT: Tama: Fix reserved memory override
+---
+ arch/arm64/boot/dts/somc/sdm845-tama-common.dtsi | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/somc/sdm845-tama-common.dtsi b/arch/arm64/boot/dts/somc/sdm845-tama-common.dtsi
+index 9cba1f27..aa5d5adf 100644
+--- a/arch/arm64/boot/dts/somc/sdm845-tama-common.dtsi
++++ b/arch/arm64/boot/dts/somc/sdm845-tama-common.dtsi
+@@ -11,7 +11,7 @@
+  */
+ 
+ / {
+-	reserved-memory {
++	reserved_mem: reserved-memory {
+ 		debug_region: debug_region@ffb00000 {
+ 			compatible = "removed-dma-pool", "qcom,debug_memory";
+ 			no-map;
+@@ -23,14 +23,14 @@
+ 			compatible = "removed-dma-pool", "ramoops";
+ 			no-map;
+ 			reg = <0 0xffc00000 0 0x00100000>;
+-			record-size = <0x1000>;
+-			console-size = <0x40000>;
+-			ftrace-size = <0x0>;
+-			msg-size = <0x0>;
+-			cc-size = <0x0>;
++			record-size = <0x10000>;
++			console-size = <0x60000>;
++			ftrace-size = <0x10000>;
++			pmsg-size = <0x20000>;
++			ecc-size = <16>;
+ 		};
+ 
+-		qseecom_region@0x8ab00000 {
++		qseecom_mem: qseecom_region@0x8ab00000 {
+ 			reg = <0 0x8ab00000 0 0x1900000>;
+ 		};
+ 
+-- 
+2.49.1
+

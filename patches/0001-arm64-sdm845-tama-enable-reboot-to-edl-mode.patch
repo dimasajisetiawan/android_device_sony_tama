@@ -1,0 +1,48 @@
+Subject: [PATCH] arm64: sdm845: tama: enable reboot to edl mode
+
+---
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 5 +++++
+ drivers/power/reset/msm-poweroff.c   | 4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index f0a0fa24..97260006 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -1935,6 +1935,11 @@
+ 			compatible = "qcom,msm-imem-diag-dload";
+ 			reg = <0xc8 200>;
+ 		};
++
++		emergency_download_mode@fe0 {
++			compatible = "qcom,msm-imem-emergency_download_mode";
++			reg = <0xfe0 12>;
++		};
+ 	};
+ 
+ 	qcom,venus@aae0000 {
+diff --git a/drivers/power/reset/msm-poweroff.c b/drivers/power/reset/msm-poweroff.c
+index 3e326986..4041ffd0 100644
+--- a/drivers/power/reset/msm-poweroff.c
++++ b/drivers/power/reset/msm-poweroff.c
+@@ -165,7 +165,7 @@ static bool get_dload_mode(void)
+ 	return dload_mode_enabled;
+ }
+ 
+-#if 0
++#if 1
+ static void enable_emergency_dload_mode(void)
+ {
+ 	int ret;
+@@ -386,7 +386,7 @@ static void msm_restart_prepare(const char *cmd)
+ 						     restart_reason);
+ 				}
+ 			}
+-#if 0
++#if 1
+ 		} else if (!strncmp(cmd, "edl", 3)) {
+ 			enable_emergency_dload_mode();
+ #endif
+-- 
+2.49.1
+

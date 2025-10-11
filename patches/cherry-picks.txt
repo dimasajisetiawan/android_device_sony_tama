@@ -1,0 +1,11 @@
+https://github.com/LineageOS/android_kernel_sony_sdm845
+
+8f4b0f98e86d48324887c1c301ce60332dd0654a
+From: Olivier Karasangabo
+Date: Sat, 28 Mar 2020 01:15:00 +0100
+Subject: [PATCH] tama: Disable AVB on /vendor
+
+651b41a3a0dcc2fc3f3176c2efaffce66c2f8694
+From: ekkusa
+Date: Sun, 28 May 2023 11:05:00 +0800
+Subject: [PATCH] arm64/dts: somc: sdm845-tama-common: fix invalid thermal trips

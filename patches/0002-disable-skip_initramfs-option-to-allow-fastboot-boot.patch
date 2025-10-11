@@ -1,0 +1,25 @@
+Subject: [PATCH] disable skip_initramfs option to allow fastboot boot
+
+this is inspired by binary patch done by magisk in order to force
+boot into initramfs even in case when bootloader tries to make
+kernel boot directly from system as root partition
+---
+ init/initramfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/init/initramfs.c b/init/initramfs.c
+index bf3af10c..fe91420c 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -616,7 +616,7 @@ static int __init skip_initramfs_param(char *str)
+ 	do_skip_initramfs = 1;
+ 	return 1;
+ }
+-__setup("skip_initramfs", skip_initramfs_param);
++__setup("want_initramfs", skip_initramfs_param);
+ 
+ static int __init populate_rootfs(void)
+ {
+-- 
+2.49.1
+
