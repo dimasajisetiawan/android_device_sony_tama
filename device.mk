@@ -47,6 +47,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.fastboot@1.0-impl-mock \
     fastbootd
+PRODUCT_PROPERTY_OVERRIDES += ro.fastbootd.available=true
 
 # qcom decryption
 PRODUCT_PACKAGES += \
