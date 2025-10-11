@@ -47,6 +47,7 @@ TARGET_USES_UEFI := true
 
 # Kernel
 BOARD_KERNEL_CMDLINE := \
+    androidboot.selinux=permissive \
     androidboot.console=ttyMSM0 \
     androidboot.hardware=qcom \
     androidboot.usbcontroller=a600000.dwc3 \
@@ -96,8 +97,6 @@ BOARD_VENDORIMAGE_PARTITION_SIZE := 1056714752
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
-
-BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 
 # Workaround for error copying vendor files to recovery ramdisk
 TARGET_COPY_OUT_VENDOR := vendor
